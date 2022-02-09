@@ -98,6 +98,7 @@ class Solver(nn.Module):
         start_time = time.time()
         for i in range(args.resume_iter, args.total_iters):
             # fetch images and labels
+            iteration_start_time = time.time()
             inputs = next(fetcher)
             x_real, y_org = inputs.x_src, inputs.y_src
             x_ref, x_ref2, y_trg = inputs.x_ref, inputs.x_ref2, inputs.y_ref
@@ -145,8 +146,12 @@ class Solver(nn.Module):
             # print out log info
             if (i+1) % args.print_every == 0:
                 elapsed = time.time() - start_time
+                iteration_elapsed = time.time() - iteration_start_time
                 elapsed = str(datetime.timedelta(seconds=elapsed))[:-7]
-                log = "Elapsed time [%s], Iteration [%i/%i], " % (elapsed, i+1, args.total_iters)
+                log = "Elapsed time [%s], Per iteration [%.2f], Iteration [%i/%i], " % (elapsed,
+                                                                                      float(iteration_elapsed) / args.print_every,
+                                                                                      i+1,
+                                                                                      args.total_iters)
                 all_losses = dict()
                 for loss, prefix in zip([d_losses_latent, d_losses_ref, g_losses_latent, g_losses_ref],
                                         ['D/latent_', 'D/ref_', 'G/latent_', 'G/ref_']):

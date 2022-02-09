@@ -176,7 +176,7 @@ def interpolate(nets, args, x_src, s_prev, s_next):
 def slide(entries, margin=32):
     """Returns a sliding reference window.
     Args:
-        entries: a list containing two reference images, x_prev and x_next, 
+        entries: a list containing two reference images, x_prev and x_next,
                  both of which has a shape (1, 3, 256, 256)
     Returns:
         canvas: output slide of shape (num_frames, 3, 256*2, 256+margin)
@@ -262,7 +262,7 @@ def video_latent(nets, args, x_src, y_list, z_list, psi, fname):
 def save_video(fname, images, output_fps=30, vcodec='libx264', filters=''):
     assert isinstance(images, np.ndarray), "images should be np.array: NHWC"
     num_frames, height, width, channels = images.shape
-    stream = ffmpeg.input('pipe:', format='rawvideo', 
+    stream = ffmpeg.input('pipe:', format='rawvideo',
                           pix_fmt='rgb24', s='{}x{}'.format(width, height))
     stream = ffmpeg.filter(stream, 'setpts', '2*PTS')  # 2*PTS is for slower playback
     stream = ffmpeg.output(stream, fname, pix_fmt='yuv420p', vcodec=vcodec, r=output_fps)
